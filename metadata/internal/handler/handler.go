@@ -1,6 +1,7 @@
 package http
 
 import (
+	"encoding/json"
 	"errors"
 	"log"
 	"movieExample/metadata/internal/controller"
@@ -29,5 +30,10 @@ func (h *Handler) GetMetadata(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if err != nil {
 		log.Printf("Repository get error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if err := json.NewEncoder(w).Encode(m); err != nil {
+		log.Printf("Response encode error: %v\n", err)
 	}
 }
